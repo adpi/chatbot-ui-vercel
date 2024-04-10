@@ -40,6 +40,12 @@ import { VALID_ENV_KEYS } from "@/types/valid-keys"
 import { useRouter } from "next/navigation"
 import { FC, useEffect, useState } from "react"
 
+import {
+  createAssistant,
+  updateAssistant,
+  getAssistantIdByWpId
+} from "@/db/assistants"
+
 interface GlobalStateProps {
   children: React.ReactNode
 }
@@ -261,7 +267,138 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
   const fetchWorkspaceData = async (workspaceId: string) => {
     setLoading(true)
 
+    // #here 1
+
+    console.log("=== START ===")
+
+    // console.log('ASSISTANTS 111: ');
+    // console.log(xassistantData);
+
+    const response = await fetch(
+      "http://beyondai.greenman.usermd.net/wp-json/wp/v2/talent"
+    )
+
+    // let res = new Response(JSON.stringify({ assistants: response.data }), {
+    //   status: 200
+    // });
+
+    const responseJson = await response.json()
+
+    console.log("==== TALENTS ====")
+    console.log(responseJson)
+
+    // let sampleObj = {
+    //   "id": "af75c193-3f09-455e-9184-10588f4ccebd",
+    //   "name": "Sample assistant name",
+    //   "model": "gpt-3.5-turbo",
+    //   "prompt": "You are Sample asistant name. This is prompt",
+    //   "sharing": "private",
+    //   "user_id": "3d3c6a52-2ea7-4a62-b696-a9d8cacb3180",
+    //   "folder_id": null,
+    //   "created_at": "2024-02-01T23:27:22.482878+00:00",
+    //   "image_path": "",
+    //   "updated_at": "2024-02-01T23:28:16.335589+00:00",
+    //   "description": "Assistant description",
+    //   "temperature": 0.5,
+    //   "context_length": 4096,
+    //   "embeddings_provider": "openai",
+    //   "include_profile_context": false,
+    //   "include_workspace_instructions": false
+    // };
+
+    responseJson.forEach(async (element: any) => {
+      // context_length: number
+      // created_at?: string
+      // description: string
+      // embeddings_provider: string
+      // folder_id?: string | null
+      // id?: string
+      // image_path: string
+      // include_profile_context: boolean
+      // include_workspace_instructions: boolean
+      // model: string
+      // name: string
+      // prompt: string
+      // sharing?: string
+      // temperature: number
+      // updated_at?: string | null
+      // user_id: string
+
+      const assId = await getAssistantIdByWpId(element.id)
+
+      console.log("ASS ID ASS ID ASS ID: ")
+      console.log(assId)
+
+      const assObj = {
+        name: element.title.rendered,
+        model: "gpt-3.5-turbo",
+        prompt: element.acf.talent,
+        description: element.acf.talent, // ??
+
+        // ??? - dodac kolumny do bazy
+        // "talent_name": element.acf.talent_name,
+        // "talent_description_visible_to_users": element.acf.talent_description_visible_to_users,
+        // "conversation_starters": element.acf.conversation_starters,
+
+        sharing: "private",
+        user_id: "3d3c6a52-2ea7-4a62-b696-a9d8cacb3180",
+        folder_id: null,
+        // "created_at": "2024-02-01T23:27:22.482878+00:00",
+        image_path: "",
+        updated_at: "2024-02-01T23:28:16.335589+00:00",
+
+        temperature: 0.5,
+        context_length: 4096,
+        embeddings_provider: "openai",
+        include_profile_context: false,
+        include_workspace_instructions: false,
+        wp_id: element.id
+      }
+
+      // @ts-ignore
+      if (assId && assId.id) {
+        // @ts-ignore
+        console.log("HERE UPDATE ASS ++++++++++: " + assId.id)
+
+        // @ts-ignore
+        let updatedAssistant = await updateAssistant(assId.id, assObj)
+      } else {
+        console.log("||| CREATE assistant |||")
+        const createdAssistant = await createAssistant(assObj, workspaceId)
+        console.log(createdAssistant)
+      }
+
+      console.log("+++++++ createdAssistant +++++++")
+
+      // let ass: { context_length: number; created_at: string; description: string; embeddings_provider: string; folder_id: string | null; id: string; image_path: string; include_profile_context: boolean; include_workspace_instructions: boolean; model: string; name: string; prompt: string; sharing: string; temperature: number; updated_at: string | null; user_id: string } | never[] = {
+      //   "id": "af75c193-3f09-455e-9184-10588f4ccebd" +  Math.floor(Math.random() * (100 - 1 + 1) + 1),
+      //   "name": element.title.rendered,
+      //   "model": "gpt-3.5-turbo",
+      //   "prompt": element.acf.talent,
+      //   "sharing": "private",
+      //   "user_id": "3d3c6a52-2ea7-4a62-b696-a9d8cacb3180",
+      //   "folder_id": null,
+      //   "created_at": "2024-02-01T23:27:22.482878+00:00",
+      //   "image_path": "",
+      //   "updated_at": "2024-02-01T23:28:16.335589+00:00",
+      //   "description": element.acf.talent,
+      //   "temperature": 0.5,
+      //   "context_length": 4096,
+      //   "embeddings_provider": "openai",
+      //   "include_profile_context": false,
+      //   "include_workspace_instructions": false
+      // };
+
+      // assistantData.assistants.push([ass]);
+    })
+
     const assistantData = await getAssistantWorkspacesByWorkspaceId(workspaceId)
+
+    // const assistantData = await response.json()
+
+    // console.log('ASSISTANTS 222: ');
+    console.log(assistantData)
+
     setAssistants(assistantData.assistants)
 
     for (const assistant of assistantData.assistants) {
@@ -329,10 +466,16 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
   const fetchOpenaiAssistants = async () => {
     setLoading(true)
 
+    // console.log('fetchOpenaiAssistants');
+
     try {
+      // #here 2
       const response = await fetch("/api/assistants/openai")
 
       const data = await response.json()
+
+      console.log("===================================")
+      console.log(data)
 
       setOpenaiAssistants(data.assistants)
     } catch (error) {

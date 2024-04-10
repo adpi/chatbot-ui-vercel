@@ -62,9 +62,9 @@ export const Sidebar: FC<SidebarProps> = ({ contentType, showSidebar }) => {
     >
       <div className="flex h-full flex-col p-3">
         <div className="flex items-center border-b-2 pb-2">
-          <WorkspaceSwitcher />
+          {/* <WorkspaceSwitcher /> */}
 
-          <WorkspaceSettings />
+          {/* <WorkspaceSettings /> */}
         </div>
 
         {(() => {

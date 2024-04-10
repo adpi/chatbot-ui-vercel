@@ -333,7 +333,7 @@ export const ProfileSettings: FC<ProfileSettingsProps> = ({}) => {
           <Tabs defaultValue="profile">
             <TabsList className="mt-4 grid w-full grid-cols-2">
               <TabsTrigger value="profile">Profile</TabsTrigger>
-              <TabsTrigger value="keys">API Keys</TabsTrigger>
+              <TabsTrigger value="keys">Company data</TabsTrigger>
             </TabsList>
 
             <TabsContent className="mt-4 space-y-4" value="profile">
@@ -408,7 +408,7 @@ export const ProfileSettings: FC<ProfileSettingsProps> = ({}) => {
                 />
               </div>
 
-              <div className="space-y-1">
+              {/* <div className="space-y-1">
                 <Label className="text-sm">
                   What would you like the AI to know about you to provide better
                   responses?
@@ -426,11 +426,27 @@ export const ProfileSettings: FC<ProfileSettingsProps> = ({}) => {
                   used={profileInstructions.length}
                   limit={PROFILE_CONTEXT_MAX}
                 />
-              </div>
+              </div> */}
             </TabsContent>
 
             <TabsContent className="mt-4 space-y-4" value="keys">
-              <div className="mt-5 space-y-2">
+              <div className="space-y-1">
+                {/* {envKeyMap["anthropic"] ? (
+                  <Label>Anthropic API key set by admin.</Label>
+                ) : ( */}
+                <>
+                  <Label>Company name</Label>
+                  <Input
+                    placeholder="Company name"
+                    type="text"
+                    // value={anthropicAPIKey}
+                    // onChange={e => setAnthropicAPIKey(e.target.value)}
+                  />
+                </>
+                {/* )} */}
+              </div>
+
+              {/* <div className="mt-5 space-y-2">
                 <Label className="flex items-center">
                   {useAzureOpenai
                     ? envKeyMap["azure"]
@@ -483,9 +499,9 @@ export const ProfileSettings: FC<ProfileSettingsProps> = ({}) => {
                     )}
                   </>
                 )}
-              </div>
+              </div> */}
 
-              <div className="ml-8 space-y-3">
+              {/* <div className="ml-8 space-y-3">
                 {useAzureOpenai ? (
                   <>
                     {
@@ -623,9 +639,9 @@ export const ProfileSettings: FC<ProfileSettingsProps> = ({}) => {
                     </div>
                   </>
                 )}
-              </div>
+              </div> */}
 
-              <div className="space-y-1">
+              {/* <div className="space-y-1">
                 {envKeyMap["anthropic"] ? (
                   <Label>Anthropic API key set by admin.</Label>
                 ) : (
@@ -639,9 +655,9 @@ export const ProfileSettings: FC<ProfileSettingsProps> = ({}) => {
                     />
                   </>
                 )}
-              </div>
+              </div> */}
 
-              <div className="space-y-1">
+              {/* <div className="space-y-1">
                 {envKeyMap["google"] ? (
                   <Label>Google Gemini API key set by admin.</Label>
                 ) : (
@@ -687,9 +703,9 @@ export const ProfileSettings: FC<ProfileSettingsProps> = ({}) => {
                     />
                   </>
                 )}
-              </div>
+              </div> */}
 
-              <div className="space-y-1">
+              {/* <div className="space-y-1">
                 {envKeyMap["openrouter"] ? (
                   <Label>OpenRouter API key set by admin.</Label>
                 ) : (
@@ -703,7 +719,7 @@ export const ProfileSettings: FC<ProfileSettingsProps> = ({}) => {
                     />
                   </>
                 )}
-              </div>
+              </div> */}
             </TabsContent>
           </Tabs>
         </div>

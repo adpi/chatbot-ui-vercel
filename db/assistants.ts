@@ -15,6 +15,23 @@ export const getAssistantById = async (assistantId: string) => {
   return assistant
 }
 
+export const getAssistantIdByWpId = async (assistantWpId: string) => {
+  const { data: assistant, error } = await supabase
+    .from("assistants")
+    .select(
+      `
+      id,
+      wp_id
+      `
+    )
+    .eq("wp_id", assistantWpId)
+    .single()
+
+  console.log(assistantWpId, assistant)
+
+  return assistant
+}
+
 export const getAssistantWorkspacesByWorkspaceId = async (
   workspaceId: string
 ) => {
