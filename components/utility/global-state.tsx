@@ -275,7 +275,7 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
     // console.log(xassistantData);
 
     const response = await fetch(
-      "http://beyondai.greenman.usermd.net/wp-json/wp/v2/talent"
+      "https://beyondai.greenman.usermd.net/wp-json/wp/v2/talent"
     )
 
     // let res = new Response(JSON.stringify({ assistants: response.data }), {
